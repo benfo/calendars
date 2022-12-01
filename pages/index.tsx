@@ -2,6 +2,7 @@ import Head from "next/head";
 import path from "path";
 import fs from "fs/promises";
 import { styled } from "../stitches.config";
+import { generateIcs } from "../utils/generate-ics";
 
 const Box = styled("div", {});
 
@@ -59,6 +60,8 @@ const Container = styled("div", {
 });
 
 export async function getStaticProps() {
+  await generateIcs();
+
   const jsonDirectory = path.join(process.cwd(), "json");
   const fileContents = await fs.readFile(
     jsonDirectory + "/world-cup.json",
