@@ -60,15 +60,27 @@ const Container = styled("div", {
 });
 
 export async function getStaticProps() {
-  await generateIcs();
+  if (!process.env.RAPID_API_KEY) {
+    return {};
+  }
 
-  const jsonDirectory = path.join(process.cwd(), "json");
-  const fileContents = await fs.readFile(
-    jsonDirectory + "/world-cup.json",
-    "utf-8"
+  const options = {
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": process.env.RAPID_API_KEY,
+      "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
+    },
+  };
+
+  const res = await fetch(
+    "https://api-football-v1.p.rapidapi.com/v3/fixtures?league=1&season=2022",
+    options
   );
 
-  const data = JSON.parse(fileContents);
+  const data = await res.json();
+
+  await generateIcs(data);
+
   const fixtures = data.response;
   fixtures.sort((a: any, b: any) => {
     return a.fixture.timestamp - b.fixture.timestamp;
