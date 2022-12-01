@@ -61,7 +61,8 @@ const Container = styled("div", {
 
 export async function getStaticProps() {
   if (!process.env.RAPID_API_KEY) {
-    return {};
+    console.warn("API key not found");
+    return { props: { fixtures: [] } };
   }
 
   const options = {
