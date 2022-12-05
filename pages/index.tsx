@@ -1,8 +1,8 @@
 import Head from "next/head";
-import path from "path";
-import fs from "fs/promises";
-import { styled } from "../stitches.config";
+import { styled } from "../theme/stitches.config";
 import { generateIcs } from "../utils/generate-ics";
+import { Heading } from "../components/heading";
+import { useEffect, useState } from "react";
 
 const Box = styled("div", {});
 
@@ -23,7 +23,6 @@ const Card = styled(Box, {
 });
 
 const Table = styled("table", {
-  fontFamily: "$system",
   width: "100%",
 });
 const Td = styled("td", {
@@ -34,10 +33,6 @@ const Td = styled("td", {
       },
     },
   },
-});
-
-const Text = styled("p", {
-  fontFamily: "$system",
 });
 
 const Container = styled("div", {
@@ -61,7 +56,7 @@ const Container = styled("div", {
 
 export async function getStaticProps() {
   if (!process.env.RAPID_API_KEY) {
-    throw Error("RAPID_API_KEY variable not found.")
+    throw Error("RAPID_API_KEY variable not found.");
   }
 
   const options = {
@@ -89,6 +84,15 @@ export async function getStaticProps() {
   return { props: { fixtures } };
 }
 
+const LocalDate = ({ date }: { date: string }) => {
+  const [dt, setDt] = useState("");
+  useEffect(() => {
+    setDt(new Date(date).toLocaleString());
+  }, []);
+
+  return <>{dt}</>;
+};
+
 export default function Home({ fixtures }: { fixtures: any }) {
   return (
     <div>
@@ -99,6 +103,8 @@ export default function Home({ fixtures }: { fixtures: any }) {
       </Head>
 
       <main>
+        <Heading as="h1">Fifa Wold Cup</Heading>
+        <Heading as="h2">Scores & Fixtures</Heading>
         <Container size="2">
           <Grid
             css={{
@@ -109,7 +115,11 @@ export default function Home({ fixtures }: { fixtures: any }) {
             {fixtures.map((data: any) => (
               <Card key={data.fixture.id}>
                 {/* <Text as="h1">{data.fixture.venue.name}</Text> */}
-                <Text as="h2">{data.league.round}</Text>
+                <Heading size="lg">{data.league.round}</Heading>
+
+                <Heading size="md">
+                  <LocalDate date={data.fixture.date} />
+                </Heading>
                 <Table>
                   <tbody>
                     <tr>

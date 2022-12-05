@@ -1,6 +1,11 @@
-import React from 'react'
-import NextDocument, { Html, Head, Main, NextScript } from 'next/document'
-import { getCssText } from '../stitches.config'
+import NextDocument, { Html, Head, Main, NextScript } from "next/document";
+import { getCssText, reset } from "../theme/stitches.config";
+
+const getCssAndReset = () => {
+  const css = getCssText();
+  reset();
+  return css;
+};
 
 export default class Document extends NextDocument {
   render() {
@@ -9,7 +14,7 @@ export default class Document extends NextDocument {
         <Head>
           <style
             id="stitches"
-            dangerouslySetInnerHTML={{ __html: getCssText() }}
+            dangerouslySetInnerHTML={{ __html: getCssAndReset() }}
           />
         </Head>
         <body>
@@ -17,6 +22,6 @@ export default class Document extends NextDocument {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
